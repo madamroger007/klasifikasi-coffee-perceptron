@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klasifikasi Jenis Kopi</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+
+        }
+      }
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+    .content-auto {
+      content-visibility: auto;
+    }
+  }
+</style>
+  <link rel="stylesheet"
+    href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+
+</head>
+
+<body>
+  <!-- <h1>Klasifikasi Jenis Kopi</h1>
+  
+  <form id="predict-form">
+    <h3>Masukkan Data Kopi:</h3>
+    <label>Keasaman:</label><input type="number" step="0.1" id="acidity" placeholder="1.0 - 10.0" required><br>
+    <label>Aroma:</label><input type="number" step="0.1" id="aroma" placeholder="1.0 - 10.0" required><br>
+    <label>Kepahitan:</label><input type="number" step="0.1" id="bitterness" placeholder="1.0 - 10.0" required><br>
+    
+    <button type="submit">Prediksi</button>
+    <button id="train">Latih Model</button>
+  </form>
+  <h3 id="result"></h3> -->
+
+
+  <!-- Kode HTML     -->
+
+  <section class="pb-20 relative block bg-blueGray-800">
+    <div class="container mx-auto px-4 lg:pt-24 lg:pb-64">
+      <div class="flex flex-wrap text-center justify-center">
+        <div class="w-full lg:w-6/12 px-4">
+          <h2 class="text-4xl font-semibold text-white">Website Klasifikasi Jenis Kopi</h2>
+          <p class="text-lg leading-relaxed mt-4 mb-4 text-blueGray-400">
+            Web untuk Klasifikasi Jenis Kopi dengan Metode Perceptron
+          </p>
+        </div>
+      </div>
+      <div class="flex flex-wrap mt-12 justify-center">
+        <div class="w-full lg:w-3/12 px-4 text-center">
+          <div
+            class="text-lightBlue-300 p-3 w-12 h-12 shadow-lg rounded-full bg-white inline-flex items-center justify-center">
+            <i class="fas fa-medal text-xl"></i>
+          </div>
+          <h6 class="text-xl mt-5 font-semibold text-white">
+            Keasaman (Acidity)
+          </h6>
+          <p class="mt-2 mb-4 text-blueGray-400">
+          <ul class="text-start text-gray-400 list-disc">
+            <li>Rentang nilai: 1.0 - 10.0</li>
+            <li>1.0: Keasaman sangat rendah (biasanya untuk kopi dengan profil rasa yang lebih datar atau Robusta).</li>
+            <li> 10.0: Keasaman sangat tinggi (biasanya untuk kopi Arabika dengan profil rasa yang lebih asam dan
+              tajam).</li>
+          </ul>
+
+
+
+          </p>
+        </div>
+        <div class="w-full lg:w-3/12 px-4 text-center">
+          <div
+            class="text-blueGray-800 p-3 w-12 h-12 shadow-lg rounded-full bg-white inline-flex items-center justify-center">
+            <i class="fas fa-wind text-xl"></i>
+          </div>
+          <h5 class="text-xl mt-5 font-semibold text-white">
+            Aroma (Aroma)
+          </h5>
+          <p class="mt-2 mb-4 text-blueGray-400">
+          <ul class="text-start text-gray-400 list-disc">
+            <li>Rentang nilai: 1.0 - 10.0</li>
+            <li>1.0: Aroma sangat lemah atau hampir tidak tercium.</li>
+            <li>Aroma sangat kuat, khas kopi premium seperti Arabika dengan aroma yang kompleks.</li>
+          </ul>
+          </p>
+        </div>
+        <div class="w-full lg:w-3/12 px-4 text-center">
+          <div
+            class="text-blueGray-800 p-3 w-12 h-12 shadow-lg rounded-full bg-white inline-flex items-center justify-center">
+            <i class="fas fa-coffee text-xl"></i>
+          </div>
+          <h5 class="text-xl mt-5 font-semibold text-white">Kepahitan (Bitterness)</h5>
+          <p class="mt-2 mb-4 text-blueGray-400">
+          <ul class="text-start text-gray-400 list-disc">
+            <li>Rentang nilai: 1.0 - 10.0</li>
+            <li>1.0: Kepahitan sangat rendah, lebih seperti kopi Arabika yang ringan dan halus.</li>
+            <li>10.0: Kepahitan sangat tinggi, biasanya ditemukan pada kopi Robusta atau kopi dengan rasa pahit yang
+              dominan.</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <form id="predict-form" class="relative block pt-24 lg:pt-0 bg-blueGray-800">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-wrap justify-center lg:-mt-64 -mt-48">
+        <div class="w-full lg:w-6/12 px-4">
+          <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200">
+            <div class="flex-auto p-5 lg:p-10">
+              <h4 class="text-2xl font-semibold">Form penilaian Coffee</h4>
+              <p class="leading-relaxed mt-1 mb-4 text-blueGray-500">
+                Masukan data kopi yang ingin di prediksi penilaiannya
+              </p>
+              <div class="relative w-full mb-3 mt-8">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                  for="full-name">Keasaman</label><input type="text"
+                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  step="0.1" id="acidity" placeholder="1.0 - 10.0" required>
+              </div>
+              <div class="relative w-full mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="aroma">Aroma</label><input
+                  type="text"
+                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  step="0.1" id="aroma" placeholder="1.0 - 10.0" required>
+              </div>
+              <div class="relative w-full mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                  for="kepahitan">Kepahitan</label>
+                <input type="text"
+                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  step="0.1" id="bitterness" placeholder="1.0 - 10.0" required>
+              </div>
+
+              <div class="text-center mt-6">
+                <button
+                  class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button" id="train" onclick="trainModel()">
+                  Latih dulu AI nya masbro
+                </button>
+                <button
+                  class="disabled-btn  text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  type="button" id="predictButton" onclick="predictModel()">
+                  Prediksi
+                </button>
+              </div>
+
+
+              <div id="show-result" class="hidden">
+                <div class="flex gap-2 items-center">
+
+                  <span id="predictionResult" class="">Prediksi: </span><span id="prediction-span"></span>
+                </div>
+
+                <div id="memeImage">
+                  <img src="" id="memeImageSrc" alt="Meme Image" style="max-width: 100%; height: auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="relative bg-blueGray-800 pt-8 pb-6 mt-1">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center md:justify-between justify-center">
+          <div class="w-full md:w-6/12 px-4 mx-auto text-center">
+            <div class="text-sm text-white font-semibold py-1">
+              Made by <a href="https://github.com/madamroger007" class="text-white hover:text-blueGray-600"
+                target="_blank"> Madamroger</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </form>
+  <!-- Kode HTML -->
+
+  <script>
+    // Fungsi untuk melakukan training model
+    function trainModel() {
+      // Ganti status tombol prediksi menjadi aktif setelah training selesai
+      $("#trainButton").prop("disabled", true); // Matikan tombol train
+      $("#predictButton").prop("disabled", false); // Aktifkan tombol prediksi
+      $("#predictButton").removeClass("disabled-btn").addClass("bg-blueGray-800"); // Ubah warna tombol prediksi
+      // Simulasikan proses training model (misalnya, request ke server untuk train)
+      $.ajax({
+        url: '/train',  // Endpoint untuk train model
+        type: 'POST',
+        success: function (response) {
+          alert('Model telah dilatih!');
+        },
+        error: function (error) {
+          alert('Terjadi kesalahan saat melatih model.');
+        }
+      });
+    }
+
+    // Fungsi untuk memprediksi jenis kopi
+    function predictModel() {
+      var acidity = $("#acidity").val();
+      var aroma = $("#aroma").val();
+      var bitterness = $("#bitterness").val();
+
+      $.ajax({
+        url: '/predict',  // Endpoint untuk prediksi
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          acidity: acidity,
+          aroma: aroma,
+          bitterness: bitterness
+        }),
+        success: function (response) {
+          // Tampilkan hasil prediksi
+          $("#prediction-span").html(response.prediction).addClass("block uppercase text-blueGray-600 text-xs font-bold");
+
+          // Tampilkan gambar meme
+          $("#memeImageSrc").attr("src", response.image_url);
+          console.log(response.image_url);
+
+          $("#show-result").removeClass("hidden");
+
+
+
+        },
+        error: function (error) {
+          alert('Terjadi kesalahan saat memprediksi.');
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
